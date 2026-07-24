@@ -44,14 +44,22 @@ def test_force_not_has_highest_priority(tmp_path):
     assert classify(tmp_path, body="BLOCK", config=config).classification == "not_newsletter"
 
 
-def test_force_newsletter_does_not_outrank_exclude(tmp_path):
+def test_force_newsletter_outranks_exclude(tmp_path):
     config = {**DEFAULT_CONFIG, "keywords": {**DEFAULT_CONFIG["keywords"], "force_newsletter": ["weekly"], "exclude_from_newsletter": ["order"]}}
-    assert classify(tmp_path, body="weekly order", config=config).classification == "not_newsletter"
+    assert classify(tmp_path, body="weekly order", config=config).classification == "newsletter"
 
 
 def test_exclude_is_not_newsletter(tmp_path):
     config = {**DEFAULT_CONFIG, "keywords": {**DEFAULT_CONFIG["keywords"], "exclude_from_newsletter": ["receipt"]}}
     assert classify(tmp_path, body="receipt", config=config).classification == "not_newsletter"
+
+
+def test_exclude_outranks_add_keyword(tmp_path):
+    config = {**DEFAULT_CONFIG, "keywords": {**DEFAULT_CONFIG["keywords"], "exclude_from_newsletter": ["receipt"], "add_as_newsletter": ["weekly"]}}
+    result = classify(tmp_path, body="receipt weekly", config=config)
+    assert result.classification == "not_newsletter"
+    assert result.score == 0
+    assert result.matched_exclude_keywords == ["receipt"]
 
 
 def test_add_keyword_uses_configured_score(tmp_path):
