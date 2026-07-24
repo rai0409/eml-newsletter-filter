@@ -1,7 +1,7 @@
 from email import policy
 from email.header import decode_header
 from email.parser import BytesParser
-from email.utils import parseaddr
+from email.utils import getaddresses, parseaddr
 from pathlib import Path
 
 from .html_text import html_to_text_and_link_count
@@ -63,6 +63,9 @@ def parse_eml(path: Path) -> ParsedEmail:
         elif content_type == "text/html":
             html_parts.append(_part_text(part))
     html_raw = "\n".join(html_parts)
-    html_text, links = html_to_text_and_link_count(html_raw)
+    html_text, links, hrefs = html_to_text_and_link_count(html_raw)
+    recipients = [address for _, address in getaddresses(
+        [str(value) for name in ("To", "Cc") for value in message.get_all(name, [])]
+    )]
     return ParsedEmail(path, _decode_header(str(message.get("Subject", ""))), sender_name,
-                       sender_address, headers, "\n".join(plain_parts), html_text, html_raw, links)
+                       sender_address, recipients, headers, "\n".join(plain_parts), html_text, html_raw, links, hrefs)

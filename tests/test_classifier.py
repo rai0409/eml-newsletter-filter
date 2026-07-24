@@ -66,3 +66,21 @@ def test_add_keyword_uses_configured_score(tmp_path):
     config = {**DEFAULT_CONFIG, "classification": {**DEFAULT_CONFIG["classification"], "add_keyword_score": 17}, "keywords": {**DEFAULT_CONFIG["keywords"], "add_as_newsletter": ["weekly"]}}
     result = classify(tmp_path, body="weekly", config=config)
     assert result.score == 17 and result.classification == "not_newsletter"
+
+
+def test_high_score_without_strong_evidence_is_suspected(tmp_path):
+    result = classify(tmp_path, "X-Campaign-ID: x\nPrecedence: bulk", body="weekly newsletter view in browser")
+    assert result.classification == "suspected_newsletter"
+    assert result.decision_reason_code == "insufficient_newsletter_evidence"
+
+
+def test_security_protection_wins_over_newsletter_evidence(tmp_path):
+    result = classify(tmp_path, "List-Unsubscribe: <x>\nList-ID: <x>\nContent-Type: text/plain; charset=utf-8", body="認証コード 有効期限")
+    assert result.classification == "not_newsletter"
+    assert "security" in result.strong_protection_evidence
+
+
+def test_group_scores_are_capped(tmp_path):
+    config = {**DEFAULT_CONFIG, "group_caps": {**DEFAULT_CONFIG["group_caps"], "list_header_group": 10}}
+    result = classify(tmp_path, "List-Unsubscribe: <x>\nList-ID: <x>\nList-Help: <x>", config=config)
+    assert result.group_scores["list_header_group"] == {"raw": 75, "capped": 10}

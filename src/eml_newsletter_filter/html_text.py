@@ -6,13 +6,16 @@ class _TextExtractor(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.parts: list[str] = []
         self.links = 0
+        self.hrefs: list[str] = []
         self._ignored_depth = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         if tag in {"script", "style"}:
             self._ignored_depth += 1
-        if tag == "a" and any(name.lower() == "href" and value for name, value in attrs):
-            self.links += 1
+        if tag == "a":
+            for name, value in attrs:
+                if name.lower() == "href" and value:
+                    self.links += 1; self.hrefs.append(value)
         if tag in {"br", "p", "div", "li", "tr", "h1", "h2", "h3"}:
             self.parts.append(" ")
 
@@ -27,7 +30,7 @@ class _TextExtractor(HTMLParser):
             self.parts.append(data)
 
 
-def html_to_text_and_link_count(html: str) -> tuple[str, int]:
+def html_to_text_and_link_count(html: str) -> tuple[str, int, list[str]]:
     """Return displayable text and number of href links without external dependencies."""
     parser = _TextExtractor()
     try:
@@ -36,4 +39,4 @@ def html_to_text_and_link_count(html: str) -> tuple[str, int]:
     except Exception:
         # HTML is intentionally best-effort; partial text is still useful.
         pass
-    return " ".join("".join(parser.parts).split()), parser.links
+    return " ".join("".join(parser.parts).split()), parser.links, parser.hrefs

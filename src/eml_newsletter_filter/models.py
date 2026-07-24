@@ -8,11 +8,13 @@ class ParsedEmail:
     subject: str
     sender_name: str
     sender_address: str
+    recipient_addresses: list[str]
     headers: dict[str, list[str]]
     plain_text: str
     html_text: str
     html_raw: str
     html_link_count: int
+    html_links: list[str]
 
     @property
     def sender(self) -> str:
@@ -37,3 +39,13 @@ class ClassificationResult:
     matched_force_keywords: list[str] = field(default_factory=list)
     reasons: list[str] = field(default_factory=list)
     parse_error: str | None = None
+    raw_newsletter_score: int = 0
+    protection_score: int = 0
+    final_score: int = 0
+    strong_newsletter_evidence: list[str] = field(default_factory=list)
+    strong_protection_evidence: list[str] = field(default_factory=list)
+    group_scores: dict = field(default_factory=dict)
+    matched_protection_keywords: dict = field(default_factory=dict)
+    matched_keyword_locations: dict = field(default_factory=dict)
+    link_metrics: dict = field(default_factory=dict)
+    decision_reason_code: str = ""

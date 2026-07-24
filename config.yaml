@@ -2,7 +2,11 @@ classification:
   newsletter_threshold: 60
   suspected_threshold: 30
   add_keyword_score: 20
+  add_keyword_score_per_match: 8
+  add_keyword_score_cap: 24
   many_links_threshold: 10
+  link_density_threshold: 8.0
+  require_strong_evidence_for_newsletter: true
 
 feature_weights:
   list_unsubscribe: 40
@@ -19,6 +23,34 @@ feature_weights:
   tracking_parameters: 5
   many_links: 5
   automated_sender: 5
+  content_pattern: 20
+
+group_caps:
+  list_header_group: 50
+  unsubscribe_group: 25
+  campaign_provider_group: 15
+  marketing_structure_group: 15
+  sender_pattern_group: 10
+  content_pattern_group: 25
+  protection_group: 60
+
+organization:
+  internal_domains: []
+
+keyword_matching:
+  min_alphanumeric_length: 3
+  allow_short_exact_tokens: []
+
+protection_keywords:
+  security:
+    subject: [認証コード, ワンタイムパスワード, セキュリティ通知, ログイン通知, パスワード変更, verification code, one-time password]
+    body: [有効期限, IPアドレス, login attempt]
+  transactional:
+    subject: [注文確認, ご注文ありがとうございます, 発送しました, 請求書, 領収書, 決済完了, 予約確認, order confirmation, invoice, receipt]
+    body: [注文番号, 請求番号, 配送番号, 予約番号, 合計金額]
+  business_notification:
+    subject: [障害通知, メンテナンス, アラート, 承認依頼, タスク通知, system alert, incident]
+    body: []
 
 keywords:
   exclude_from_newsletter:

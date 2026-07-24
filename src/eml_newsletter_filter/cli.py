@@ -9,6 +9,7 @@ from .file_operations import copy_unique, eml_inputs, validate_input_output_path
 from .models import ClassificationResult
 from .parser import parse_eml
 from .report import write_reports
+from .evaluation import evaluate
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -19,6 +20,10 @@ def build_parser() -> argparse.ArgumentParser:
     classify.add_argument("--config", required=True, type=Path)
     classify.add_argument("--output", required=True, type=Path)
     classify.add_argument("--dry-run", action="store_true")
+    evaluate_parser = subparsers.add_parser("evaluate")
+    evaluate_parser.add_argument("--manifest", required=True, type=Path)
+    evaluate_parser.add_argument("--input", required=True, type=Path)
+    evaluate_parser.add_argument("--config", required=True, type=Path)
     return parser
 
 
@@ -69,6 +74,10 @@ def run_classify(input_path: Path, config_path: Path, output: Path, dry_run: boo
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
+        if args.command == "evaluate":
+            summary = evaluate(args.manifest, args.input, load_config(args.config))
+            print(json.dumps(summary, ensure_ascii=False, indent=2))
+            return 0
         results = run_classify(args.input, args.config, args.output, args.dry_run)
     except (ConfigError, FileNotFoundError, ValueError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
