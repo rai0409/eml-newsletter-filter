@@ -1,0 +1,15 @@
+From: =?utf-8?b?5pel5pys6Kqe44OL44Ol44O844K5?= <news@example.com>
+To: reader@example.net
+Subject: =?utf-8?b?5LuK6YCx44Gu44OL44Ol44O844K5?=
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="part"
+
+--part
+Content-Type: text/plain; charset="utf-8"
+
+配信停止をご希望の場合はこちら
+--part
+Content-Type: text/html; charset="utf-8"
+
+<html><body><h1>今週のニュース</h1><p>配信停止はこちら</p><a href="https://example.com/?utm_source=newsletter">リンク</a></body></html>
+--part--

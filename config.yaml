@@ -1,0 +1,42 @@
+classification:
+  newsletter_threshold: 60
+  suspected_threshold: 30
+  add_keyword_score: 20
+  many_links_threshold: 10
+
+feature_weights:
+  list_unsubscribe: 40
+  list_id: 30
+  list_unsubscribe_post: 20
+  precedence_bulk: 25
+  precedence_list: 25
+  list_help: 5
+  list_archive: 5
+  list_post: 5
+  unsubscribe_text: 20
+  campaign_header: 15
+  view_in_browser: 10
+  tracking_parameters: 5
+  many_links: 5
+  automated_sender: 5
+
+keywords:
+  exclude_from_newsletter:
+    - 認証コード
+    - ワンタイムパスワード
+    - 注文番号
+    - ご注文ありがとうございます
+    - 発送しました
+    - 請求書
+    - 領収書
+    - パスワード変更
+    - ログイン通知
+  add_as_newsletter:
+    - 週刊ニュース
+    - 今週のまとめ
+    - ニュースレター
+    - メールマガジン
+    - メルマガ
+    - weekly newsletter
+  force_newsletter: []
+  force_not_newsletter: []
