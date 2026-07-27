@@ -5,3 +5,10 @@ __pycache__/
 .pytest_cache/
 output/*
 !output/.gitkeep
+
+*.eml
+*.jsonl
+*.csv
+output/
+results/
+private-email-evaluation/
